@@ -761,10 +761,6 @@
           <p class="modal-section-title">Skills &amp; Tags</p>
           <div class="modal-tags">${d.tags.map(t => `<span class="modal-tag">${t}</span>`).join('')}</div>
         </div>
-      </div>
-
-      <div id="pane_${id}_screens" class="tab-pane">
-        ${buildGallery(d.screenshots, id)}
       </div> ${d.liveUrl ? `
 <div id="pane_${id}_live" class="tab-pane">
   <div style="margin-bottom:0.8rem;">
@@ -783,6 +779,10 @@
     Live site built and managed via GoHighLevel.
   </p>
 </div>` : ''}
+
+      <div id="pane_${id}_screens" class="tab-pane">
+        ${buildGallery(d.screenshots, id)}
+      </div> 
 
       ${d.videos && d.videos.length > 0 ? `<div id="pane_${id}_videos" class="tab-pane">${buildVideos(d.videos)}</div>` : ''}`;
     openOverlay();
