@@ -745,7 +745,7 @@
       <div class="modal-date-badge"><span>${d.date}</span> &nbsp;·&nbsp; ${d.role}</div>
       <div class="modal-divider"></div>
 
-      <div class="modal-tabs"> ${d.liveUrl ? `<button id="tab_${id}_live" class="modal-tab" onclick="switchTab('${id}','live')">🌐 Live Site</button>` : ''}
+      <div class="modal-tabs"> 
         <button id="tab_${id}_info"    class="modal-tab active"  onclick="switchTab('${id}','info')">📋 Info</button>
         <button id="tab_${id}_screens" class="modal-tab"         onclick="switchTab('${id}','screens')">🖼️ Screenshots</button> 
         ${d.liveUrl ? `<button id="tab_${id}_live" class="modal-tab" onclick="switchTab('${id}','live')">🌐 Live Site</button>` : ''}
@@ -761,7 +761,8 @@
           <p class="modal-section-title">Skills &amp; Tags</p>
           <div class="modal-tags">${d.tags.map(t => `<span class="modal-tag">${t}</span>`).join('')}</div>
         </div>
-      </div> ${d.liveUrl ? `
+      </div>
+${d.liveUrl ? `
 <div id="pane_${id}_live" class="tab-pane">
   <div style="margin-bottom:0.8rem;">
     <a href="${d.liveUrl}" target="_blank" style="
