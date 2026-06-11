@@ -744,7 +744,7 @@
       <div class="modal-tabs">
         <button id="tab_${id}_info"    class="modal-tab active"  onclick="switchTab('${id}','info')">📋 Info</button>
         <button id="tab_${id}_screens" class="modal-tab"         onclick="switchTab('${id}','screens')">🖼️ Screenshots</button>
-        <button id="tab_${id}_videos"  class="modal-tab"         onclick="switchTab('${id}','videos')">🎬 Videos</button>
+        ${d.videos && d.videos.length > 0 ? `<button id="tab_${id}_videos" class="modal-tab" onclick="switchTab('${id}','videos')">🎬 Videos</button>` : ''}
       </div>
 
       <div id="pane_${id}_info" class="tab-pane active">
@@ -762,9 +762,7 @@
         ${buildGallery(d.screenshots, id)}
       </div>
 
-      <div id="pane_${id}_videos" class="tab-pane">
-        ${buildVideos(d.videos)}
-      </div>`;
+      ${d.videos && d.videos.length > 0 ? `<div id="pane_${id}_videos" class="tab-pane">${buildVideos(d.videos)}</div>` : ''}`;
     openOverlay();
   }
 
