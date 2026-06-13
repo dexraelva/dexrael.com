@@ -1033,6 +1033,24 @@ ${d.liveUrl ? `
     API_BASE = localStorage.getItem('availabilityApiBase') || window.AVAILABILITY_API || '';
   } catch (e) { API_BASE = window.AVAILABILITY_API || ''; }
 
+  function fetchServerAvailability() {
+    const base = API_BASE ? API_BASE.replace(/\/$/, '') : '';
+    if (!base) return;
+    fetch(base + '/api/availability')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data && typeof data.available === 'boolean') {
+          availabilityConfig = Object.assign({}, availabilityConfig, data);
+          saveConfig();
+          renderAvailability();
+          showToast('Loaded availability from server', 1800);
+        }
+      })
+      .catch((err) => {
+        console.warn('Server availability fetch failed', err);
+      });
+  }
+
   function renderAvailability() {
     const tag = document.getElementById('availabilityTag');
     const text = document.getElementById('availabilityText');
@@ -1172,6 +1190,7 @@ ${d.liveUrl ? `
         if (btn) btn.classList.toggle('visible');
       }
     });
+    fetchServerAvailability();
   });
 
   // Toast helper
