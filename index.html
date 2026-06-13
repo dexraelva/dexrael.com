@@ -1103,6 +1103,27 @@ ${d.liveUrl ? `
     tryNext();
   }
 
+  function getWebmailComposeUrl(email) {
+    // Detect provider and return webmail compose URL
+    if (!email) return `mailto:${email}`;
+    const domain = email.split('@')[1]?.toLowerCase() || '';
+    
+    // Gmail
+    if (domain.includes('gmail')) {
+      return `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(email)}`;
+    }
+    // Outlook / Hotmail
+    if (domain.includes('outlook') || domain.includes('hotmail')) {
+      return `https://outlook.live.com/mail/0/compose?to=${encodeURIComponent(email)}`;
+    }
+    // Yahoo
+    if (domain.includes('yahoo')) {
+      return `https://mail.yahoo.com/compose?to=${encodeURIComponent(email)}`;
+    }
+    // Fallback to mailto for custom domains
+    return `mailto:${email}`;
+  }
+
   function renderAvailability() {
     const tag = document.getElementById('availabilityTag');
     const text = document.getElementById('availabilityText');
@@ -1118,10 +1139,16 @@ ${d.liveUrl ? `
       tag.classList.add('unavailable'); tag.classList.remove('available');
       text.textContent = 'Not Available — Referral';
       const name = availabilityConfig.referral && availabilityConfig.referral.name ? availabilityConfig.referral.name : 'Another VA';
-      const href = (availabilityConfig.referral && availabilityConfig.referral.calendly) || (availabilityConfig.referral && availabilityConfig.referral.email ? `mailto:${availabilityConfig.referral.email}` : '#');
+      let href = '#';
+      if (availabilityConfig.referral && availabilityConfig.referral.calendly) {
+        href = availabilityConfig.referral.calendly;
+      } else if (availabilityConfig.referral && availabilityConfig.referral.email) {
+        href = getWebmailComposeUrl(availabilityConfig.referral.email);
+      }
       referLink.style.display = 'inline-block';
       referLink.textContent = `Refer to ${name}`;
       referLink.href = href;
+      referLink.target = href.startsWith('http') ? '_blank' : '';
     }
   }
 
