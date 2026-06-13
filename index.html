@@ -54,8 +54,13 @@
     .hero-grid-bg { position: absolute; inset: 0; background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px); background-size: 60px 60px; mask-image: radial-gradient(ellipse 80% 80% at 50% 40%, black 30%, transparent 100%); }
     .hero-glow { position: absolute; width: 600px; height: 600px; background: radial-gradient(circle, #00e5ff18 0%, transparent 70%); top: -100px; right: -100px; pointer-events: none; }
     .hero-inner { position: relative; display: grid; grid-template-columns: 1fr auto; gap: 4rem; align-items: center; max-width: 1100px; width: 100%; }
-    .hero-tag { display: inline-flex; align-items: center; gap: 0.5rem; background: var(--accent-glow); border: 1px solid #00e5ff33; color: var(--accent); font-size: 0.75rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; padding: 0.35rem 0.9rem; border-radius: 100px; margin-bottom: 1.5rem; }
-    .hero-tag::before { content: '●'; font-size: 0.5rem; animation: blink 1.5s infinite; }
+    .hero-tag { display: inline-flex; align-items: center; gap: 0.6rem; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; padding: 0.35rem 0.9rem; border-radius: 100px; margin-bottom: 1.5rem; border: 1px solid transparent; transition: background 0.2s, box-shadow 0.2s, color 0.2s; }
+    .hero-tag .status-dot { display:inline-block; width:0.5rem; height:0.5rem; border-radius:50%; }
+    .hero-tag.available { background: #00ff0022; border-color: #00ff0033; color: #00ff00; box-shadow: 0 0 16px #00ff0044; }
+    .hero-tag.available .status-dot { background: #00ff00; box-shadow: 0 0 10px #00ff0077; animation: blink 1.5s infinite; }
+    .hero-tag.unavailable { background: #ffffff10; border-color: #ffffff20; color: var(--muted); box-shadow: none; }
+    .hero-tag.unavailable .status-dot { background: #ff6b6b; box-shadow: 0 0 8px #ff6b6b55; }
+    .hero-tag .refer-link { margin-left: 0.6rem; font-weight:700; color: inherit; text-decoration: underline; }
     @keyframes blink { 0%,100%{opacity:1}50%{opacity:0.3} }
     h1 { font-size: clamp(2.8rem, 6vw, 5rem); font-weight: 800; line-height: 1.05; letter-spacing: -0.02em; margin-bottom: 1.2rem; }
     h1 span { color: var(--accent); }
@@ -139,6 +144,13 @@
     /* FOOTER */
     footer { border-top: 1px solid var(--border); padding: 2rem 6vw; display: flex; justify-content: space-between; align-items: center; font-size: 0.78rem; color: var(--muted); }
     footer span { font-weight: 700; color: var(--white); }
+    /* ADMIN UI (footer) */
+    .admin-btn { background: transparent; border: 1px solid var(--border); color: var(--muted); padding: 0.36rem 0.6rem; border-radius: 8px; font-weight: 700; cursor: pointer; transition: background 0.15s, color 0.15s; }
+    .admin-btn:hover { background: rgba(255,255,255,0.02); color: var(--text); }
+    .admin-panel { position: absolute; right: 6vw; bottom: 3.25rem; background: var(--surface2); border: 1px solid var(--border); padding: 0.8rem; border-radius: 10px; min-width: 260px; box-shadow: 0 8px 28px rgba(0,0,0,0.6); z-index: 300; display: none; }
+    .admin-panel label { display: flex; align-items: center; gap: 0.6rem; font-weight:600; color:var(--text); }
+    .admin-panel input[type="text"], .admin-panel input[type="url"], .admin-panel input[type="email"] { width: 100%; margin-top: 0.45rem; padding: 0.45rem 0.6rem; border-radius: 8px; border: 1px solid var(--border); background: var(--bg); color: var(--text); }
+    .admin-panel .admin-actions { display:flex; gap:0.6rem; margin-top:0.6rem; justify-content:flex-end; }
 
     /* ANIMATIONS */
     .fade-in { opacity: 0; transform: translateY(24px); animation: fadeUp 0.7s forwards; }
@@ -245,7 +257,11 @@
     <div class="hero-glow"></div>
     <div class="hero-inner">
       <div>
-        <div class="hero-tag fade-in">Available for Projects</div>
+            <div class="hero-tag fade-in available" id="availabilityTag">
+              <span class="status-dot" aria-hidden="true"></span>
+              <span id="availabilityText">Available for Projects</span>
+              <a id="referLink" class="refer-link" href="#" target="_blank" style="display:none"></a>
+            </div>
         <h1 class="fade-in">Dex R. <span>Rael</span></h1>
         <p class="hero-sub fade-in">Virtual Assistant &amp; Go High Level Specialist helping brands grow through automation, compelling visuals, and smart social media systems.</p>
         <div class="hero-btns fade-in">
@@ -270,8 +286,7 @@
       <div class="service-card" onclick="openServiceModal('ghl')">
         <span class="service-icon">⚙️</span>
         <h3>GHL Specialist</h3>
-        <p>I design, build, and manage Go HighLevel automation systems that capture leads, follow up consistently, and convert more prospects with less manual effort.</p>
-        <span class="card-cta">View Details</span>
+        <p>Full-stack GHL implementation  CRM pipelines, automation workflows, funnel & website builds, booking systems, webhooks, API integrations, email & SMS sequences, and complete ecosystem management.</p>        <span class="card-cta">View Details</span>
       </div>
       <div class="service-card" onclick="openServiceModal('design')">
         <span class="service-icon">🎨</span>
@@ -511,6 +526,23 @@
   <p style="font-size:0.75rem;color:var(--muted);font-weight:300;">
     © 2026 Dex R. Rael · Built with passion & purpose · All rights reserved.
   </p>
+  <!-- Admin toggle (click to open) -->
+  <div style="position:relative;">
+    <button id="adminBtn" class="admin-btn" aria-expanded="false">Admin</button>
+    <div id="adminPanel" class="admin-panel" role="region" aria-label="Admin panel">
+      <label><input type="checkbox" id="adminAvailable"> Available</label>
+      <div style="margin-top:0.5rem;">
+        <input id="adminReferralName" type="text" placeholder="Referral name (optional)" />
+      </div>
+      <div style="margin-top:0.5rem;">
+        <input id="adminReferralCalendly" type="url" placeholder="Calendly URL or email" />
+      </div>
+      <div class="admin-actions">
+        <button id="adminSaveBtn" class="btn-primary">Save</button>
+        <button id="adminCancelBtn" class="btn-secondary">Close</button>
+      </div>
+    </div>
+  </div>
 </footer>
 
   <!-- MODAL -->
@@ -548,7 +580,7 @@
     ghl: {
       icon: '⚙️', label: 'Service', title: 'GHL Specialist',
       intro: 'GoHighLevel is one of the most powerful all-in-one marketing and CRM platforms available today  and I specialize in building it out fully so your business runs on autopilot.',
-      whatIdo: ['Build complete CRM pipelines and opportunity stages tailored to your sales process','Design and implement automated follow-up sequences (email, SMS, voicemail drops)','Create high-converting landing pages and funnels inside GHL','Set up lead capture forms and integrate them with your existing tools','Configure calendars, booking flows, and appointment reminders','Build custom reporting dashboards so you can track what matters','Onboard your team and document workflows for smooth handover'],
+      whatIdo: ['Build complete CRM pipelines and opportunity stages tailored to your sales process','Design and implement automated follow-up sequences (email, SMS, voicemail drops)','Create high-converting landing pages and funnels inside GHL','Build Websites','Set up lead capture forms and integrate them with your existing tools','Configure calendars, booking flows, and appointment reminders','Build custom reporting dashboards so you can track what matters','Onboard your team and document workflows for smooth handover'],
       whyIt: "Most businesses lose leads simply because they don't follow up fast enough or consistently enough. A properly built GHL system changes that  leads are captured, nurtured, and moved through your pipeline automatically, 24/7.",
       tags: ['GoHighLevel','CRM','Automation','Lead Generation','Funnels','Email Marketing','SMS Campaigns'],
     },
@@ -963,6 +995,101 @@ ${d.liveUrl ? `
   }
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape') { closeLightbox(); closeModal(); }
+  });
+  </script>
+
+  <script>
+  // Availability + Referral config with persistence and admin controls
+  const DEFAULT_AVAILABILITY = {
+    available: true,
+    referral: { name: '', email: '', calendly: '' }
+  };
+
+  // load from localStorage if present
+  let availabilityConfig = DEFAULT_AVAILABILITY;
+  try {
+    const stored = localStorage.getItem('availabilityConfig');
+    if (stored) availabilityConfig = Object.assign({}, DEFAULT_AVAILABILITY, JSON.parse(stored));
+  } catch (e) { /* ignore parse errors */ }
+
+  function saveConfig() {
+    try { localStorage.setItem('availabilityConfig', JSON.stringify(availabilityConfig)); } catch (e) {}
+  }
+
+  function renderAvailability() {
+    const tag = document.getElementById('availabilityTag');
+    const text = document.getElementById('availabilityText');
+    const referLink = document.getElementById('referLink');
+    if (!tag || !text || !referLink) return;
+
+    if (availabilityConfig.available) {
+      tag.classList.add('available'); tag.classList.remove('unavailable');
+      text.textContent = 'Available for Projects';
+      referLink.style.display = 'none';
+      referLink.href = '#';
+    } else {
+      tag.classList.add('unavailable'); tag.classList.remove('available');
+      text.textContent = 'Not Available — Referral';
+      const name = availabilityConfig.referral && availabilityConfig.referral.name ? availabilityConfig.referral.name : 'Another VA';
+      const href = (availabilityConfig.referral && availabilityConfig.referral.calendly) || (availabilityConfig.referral && availabilityConfig.referral.email ? `mailto:${availabilityConfig.referral.email}` : '#');
+      referLink.style.display = 'inline-block';
+      referLink.textContent = `Refer to ${name}`;
+      referLink.href = href;
+    }
+  }
+
+  // ADMIN PANEL
+  function toggleAdminPanel(show) {
+    const panel = document.getElementById('adminPanel');
+    const btn = document.getElementById('adminBtn');
+    if (!panel || !btn) return;
+    panel.style.display = show ? 'block' : 'none';
+    btn.setAttribute('aria-expanded', show ? 'true' : 'false');
+    if (show) populateAdminFields();
+  }
+
+  function populateAdminFields() {
+    const cb = document.getElementById('adminAvailable');
+    const name = document.getElementById('adminReferralName');
+    const calendly = document.getElementById('adminReferralCalendly');
+    if (!cb || !name || !calendly) return;
+    cb.checked = !!availabilityConfig.available;
+    name.value = availabilityConfig.referral && availabilityConfig.referral.name ? availabilityConfig.referral.name : '';
+    calendly.value = availabilityConfig.referral && (availabilityConfig.referral.calendly || availabilityConfig.referral.email) ? (availabilityConfig.referral.calendly || availabilityConfig.referral.email) : '';
+  }
+
+  function saveFromAdmin() {
+    const cb = document.getElementById('adminAvailable');
+    const name = document.getElementById('adminReferralName');
+    const calendly = document.getElementById('adminReferralCalendly');
+    if (!cb || !name || !calendly) return;
+    availabilityConfig.available = !!cb.checked;
+    availabilityConfig.referral = availabilityConfig.referral || {};
+    availabilityConfig.referral.name = name.value.trim();
+    const val = calendly.value.trim();
+    if (val.indexOf('@') !== -1) { availabilityConfig.referral.email = val; availabilityConfig.referral.calendly = ''; }
+    else { availabilityConfig.referral.calendly = val; availabilityConfig.referral.email = ''; }
+    saveConfig();
+    renderAvailability();
+    toggleAdminPanel(false);
+  }
+
+  // wire up admin UI
+  document.addEventListener('DOMContentLoaded', () => {
+    renderAvailability();
+    const adminBtn = document.getElementById('adminBtn');
+    const adminPanel = document.getElementById('adminPanel');
+    const adminSave = document.getElementById('adminSaveBtn');
+    const adminCancel = document.getElementById('adminCancelBtn');
+    if (adminBtn) adminBtn.addEventListener('click', () => toggleAdminPanel(adminPanel.style.display !== 'block'));
+    if (adminSave) adminSave.addEventListener('click', saveFromAdmin);
+    if (adminCancel) adminCancel.addEventListener('click', () => toggleAdminPanel(false));
+    // click outside adminPanel closes it
+    document.addEventListener('click', (e) => {
+      if (!adminPanel || !adminBtn) return;
+      if (adminPanel.style.display !== 'block') return;
+      if (!adminPanel.contains(e.target) && e.target !== adminBtn) toggleAdminPanel(false);
+    });
   });
   </script>
 
