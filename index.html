@@ -1112,6 +1112,20 @@ ${d.liveUrl ? `
   }
 
   // ADMIN PANEL
+  // Reveal admin via URL query (e.g. ?showAdmin=1)
+  function handleQueryAdmin() {
+    try {
+      const params = new URLSearchParams(location.search);
+      const v = params.get('showAdmin') || params.get('admin') || params.get('showadmin');
+      if (!v) return;
+      if (v === '1' || v === 'true' || v.toLowerCase() === 'open') {
+        const btn = document.getElementById('adminBtn');
+        if (btn) btn.classList.add('visible');
+        // open panel shortly after DOM ready
+        setTimeout(() => toggleAdminPanel(true), 200);
+      }
+    } catch (e) { /* ignore */ }
+  }
   function toggleAdminPanel(show) {
     const panel = document.getElementById('adminPanel');
     const btn = document.getElementById('adminBtn');
@@ -1229,6 +1243,8 @@ ${d.liveUrl ? `
       }
     });
     fetchServerAvailability();
+    // check url for ?showAdmin=1 and reveal/open admin panel on mobile
+    handleQueryAdmin();
   });
 
   // Toast helper
