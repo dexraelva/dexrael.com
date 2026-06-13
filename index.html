@@ -58,8 +58,8 @@
     .hero-tag .status-dot { display:inline-block; width:0.5rem; height:0.5rem; border-radius:50%; }
     .hero-tag.available { background: #00ff0022; border-color: #00ff0033; color: #00ff00; box-shadow: 0 0 16px #00ff0044; }
     .hero-tag.available .status-dot { background: #00ff00; box-shadow: 0 0 10px #00ff0077; animation: blink 1.5s infinite; }
-    .hero-tag.unavailable { background: #ffffff10; border-color: #ffffff20; color: var(--muted); box-shadow: none; }
-    .hero-tag.unavailable .status-dot { background: #ff6b6b; box-shadow: 0 0 8px #ff6b6b55; }
+    .hero-tag.unavailable { background: #ff4d4d22; border-color: #ff4d4d33; color: #ff4d4d; box-shadow: 0 0 16px #ff4d4d44; }
+    .hero-tag.unavailable .status-dot { background: #ff4d4d; box-shadow: 0 0 12px #ff4d4d77; animation: blink 1.5s infinite; }
     .hero-tag .refer-link { margin-left: 0.6rem; font-weight:700; color: inherit; text-decoration: underline; }
     @keyframes blink { 0%,100%{opacity:1}50%{opacity:0.3} }
     h1 { font-size: clamp(2.8rem, 6vw, 5rem); font-weight: 800; line-height: 1.05; letter-spacing: -0.02em; margin-bottom: 1.2rem; }
@@ -151,6 +151,10 @@
     .admin-panel label { display: flex; align-items: center; gap: 0.6rem; font-weight:600; color:var(--text); }
     .admin-panel input[type="text"], .admin-panel input[type="url"], .admin-panel input[type="email"] { width: 100%; margin-top: 0.45rem; padding: 0.45rem 0.6rem; border-radius: 8px; border: 1px solid var(--border); background: var(--bg); color: var(--text); }
     .admin-panel .admin-actions { display:flex; gap:0.6rem; margin-top:0.6rem; justify-content:flex-end; }
+    /* Toast */
+    .toast { position: fixed; left: 50%; transform: translateX(-50%); bottom: 3.6rem; background: rgba(0,0,0,0.7); color: #fff; padding: 0.6rem 1rem; border-radius: 8px; font-weight:600; z-index:1000; display:none; }
+    .toast.show { display:block; animation: toastIn 0.2s ease; }
+    @keyframes toastIn { from { opacity: 0; transform: translate(-50%, 6px); } to { opacity:1; transform: translate(-50%,0);} }
 
     /* ANIMATIONS */
     .fade-in { opacity: 0; transform: translateY(24px); animation: fadeUp 0.7s forwards; }
@@ -536,6 +540,12 @@
       </div>
       <div style="margin-top:0.5rem;">
         <input id="adminReferralCalendly" type="url" placeholder="Calendly URL or email" />
+      </div>
+      <div style="margin-top:0.5rem;">
+        <input id="adminApiBase" type="url" placeholder="API base (e.g. http://localhost:3000)" />
+      </div>
+      <div style="margin-top:0.5rem;">
+        <input id="adminToken" type="password" placeholder="Admin token (paste to sync)" />
       </div>
       <div class="admin-actions">
         <button id="adminSaveBtn" class="btn-primary">Save</button>
@@ -1016,6 +1026,12 @@ ${d.liveUrl ? `
     try { localStorage.setItem('availabilityConfig', JSON.stringify(availabilityConfig)); } catch (e) {}
   }
 
+  // API base (can be set via admin panel or window.AVAILABILITY_API)
+  let API_BASE = '';
+  try {
+    API_BASE = localStorage.getItem('availabilityApiBase') || window.AVAILABILITY_API || '';
+  } catch (e) { API_BASE = window.AVAILABILITY_API || ''; }
+
   function renderAvailability() {
     const tag = document.getElementById('availabilityTag');
     const text = document.getElementById('availabilityText');
@@ -1052,16 +1068,36 @@ ${d.liveUrl ? `
     const cb = document.getElementById('adminAvailable');
     const name = document.getElementById('adminReferralName');
     const calendly = document.getElementById('adminReferralCalendly');
+    const tokenInput = document.getElementById('adminToken');
+    const apiInput = document.getElementById('adminApiBase');
     if (!cb || !name || !calendly) return;
     cb.checked = !!availabilityConfig.available;
     name.value = availabilityConfig.referral && availabilityConfig.referral.name ? availabilityConfig.referral.name : '';
     calendly.value = availabilityConfig.referral && (availabilityConfig.referral.calendly || availabilityConfig.referral.email) ? (availabilityConfig.referral.calendly || availabilityConfig.referral.email) : '';
+    if (tokenInput) tokenInput.value = sessionStorage.getItem('adminToken') || '';
+    if (apiInput) apiInput.value = localStorage.getItem('availabilityApiBase') || window.AVAILABILITY_API || '';
+    // If API base is configured, try to fetch authoritative server state
+    const base = (localStorage.getItem('availabilityApiBase') || window.AVAILABILITY_API || '').replace(/\/$/, '');
+    if (base) {
+      fetch(base + '/api/availability').then(r => r.json()).then(j => {
+        if (j && typeof j.available === 'boolean') {
+          // show server values in admin fields (do not overwrite local until save)
+          cb.checked = !!j.available;
+          name.value = j.referral && j.referral.name ? j.referral.name : name.value;
+          calendly.value = j.referral && (j.referral.calendly || j.referral.email) ? (j.referral.calendly || j.referral.email) : calendly.value;
+          showToast('Loaded server state', 1800);
+        }
+      }).catch(() => {
+        showToast('Could not load server state', 1800);
+      });
+    }
   }
 
   function saveFromAdmin() {
     const cb = document.getElementById('adminAvailable');
     const name = document.getElementById('adminReferralName');
     const calendly = document.getElementById('adminReferralCalendly');
+    const tokenInput = document.getElementById('adminToken');
     if (!cb || !name || !calendly) return;
     availabilityConfig.available = !!cb.checked;
     availabilityConfig.referral = availabilityConfig.referral || {};
@@ -1069,9 +1105,47 @@ ${d.liveUrl ? `
     const val = calendly.value.trim();
     if (val.indexOf('@') !== -1) { availabilityConfig.referral.email = val; availabilityConfig.referral.calendly = ''; }
     else { availabilityConfig.referral.calendly = val; availabilityConfig.referral.email = ''; }
+    // save locally first
     saveConfig();
     renderAvailability();
-    toggleAdminPanel(false);
+
+    // attempt to sync with backend if a token was provided
+    const token = tokenInput ? tokenInput.value.trim() : (sessionStorage.getItem('adminToken') || '');
+    const apiInput = document.getElementById('adminApiBase');
+    const apiVal = apiInput ? apiInput.value.trim() : '';
+    if (apiVal) {
+      try { localStorage.setItem('availabilityApiBase', apiVal); } catch (e) {}
+      API_BASE = apiVal;
+    }
+    if (token) {
+      const base = API_BASE ? API_BASE.replace(/\/$/, '') : '';
+      const url = (base || '') + '/api/availability';
+      fetch(url, {
+        method: 'POST', headers: {
+          'Content-Type': 'application/json', 'x-admin-token': token
+        },
+        body: JSON.stringify({ available: availabilityConfig.available, referral: availabilityConfig.referral })
+      }).then(r => r.json()).then(j => {
+        if (j && j.ok) {
+          // update local copy from server canonical data
+          availabilityConfig = Object.assign({}, availabilityConfig, j.data || j);
+          saveConfig();
+          sessionStorage.setItem('adminToken', token);
+          renderAvailability();
+          toggleAdminPanel(false);
+          showToast('Saved and synced with server', 2200);
+        } else {
+          toggleAdminPanel(false);
+          showToast('Saved locally. Server: ' + (j && j.error ? j.error : 'unknown'), 3000);
+        }
+      }).catch(err => {
+        toggleAdminPanel(false);
+        console.warn('Sync error', err);
+        showToast('Saved locally; sync failed', 3000);
+      });
+    } else {
+      toggleAdminPanel(false);
+    }
   }
 
   // wire up admin UI
@@ -1091,7 +1165,21 @@ ${d.liveUrl ? `
       if (!adminPanel.contains(e.target) && e.target !== adminBtn) toggleAdminPanel(false);
     });
   });
+
+  // Toast helper
+  function showToast(msg, ms = 2500) {
+    let t = document.getElementById('toast');
+    if (!t) {
+      t = document.createElement('div'); t.id = 'toast'; t.className = 'toast'; document.body.appendChild(t);
+    }
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(t._hideTimeout);
+    t._hideTimeout = setTimeout(() => { t.classList.remove('show'); }, ms);
+  }
   </script>
+
+  <!-- toast placeholder created on demand -->
 
 </body>
 </html>
