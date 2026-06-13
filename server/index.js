@@ -7,7 +7,9 @@ const bodyParser = require('body-parser');
 
 const DATA_FILE = path.join(__dirname, 'data.json');
 const PORT = process.env.PORT || 3000;
-const ADMIN_TOKEN = process.env.ADMIN_TOKEN || 'change_me';
+// Support either DEX_ADMIN_KEY or ADMIN_TOKEN environment variable
+const ADMIN_TOKEN = process.env.DEX_ADMIN_KEY || process.env.ADMIN_TOKEN || 'change_me';
+const ADMIN_TOKEN_SOURCE = process.env.DEX_ADMIN_KEY ? 'DEX_ADMIN_KEY' : (process.env.ADMIN_TOKEN ? 'ADMIN_TOKEN' : 'default');
 
 const app = express();
 app.use(helmet());
@@ -59,5 +61,6 @@ app.get('/api/ping', (req, res) => res.json({ ok: true, ts: new Date().toISOStri
 
 app.listen(PORT, () => {
   console.log(`Availability API listening on port ${PORT}`);
-  console.log('Set an admin token with ADMIN_TOKEN env var to protect POST requests.');
+  console.log(`Admin token source: ${ADMIN_TOKEN_SOURCE}${ADMIN_TOKEN_SOURCE === 'default' ? ' (using default token)' : ''}`);
+  console.log('Set an admin token with DEX_ADMIN_KEY or ADMIN_TOKEN env var to protect POST requests.');
 });

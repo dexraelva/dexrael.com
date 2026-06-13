@@ -145,7 +145,8 @@
     footer { border-top: 1px solid var(--border); padding: 2rem 6vw; display: flex; justify-content: space-between; align-items: center; font-size: 0.78rem; color: var(--muted); }
     footer span { font-weight: 700; color: var(--white); }
     /* ADMIN UI (footer) */
-    .admin-btn { background: transparent; border: 1px solid var(--border); color: var(--muted); padding: 0.36rem 0.6rem; border-radius: 8px; font-weight: 700; cursor: pointer; transition: background 0.15s, color 0.15s; }
+    .admin-btn { display: none; background: transparent; border: 1px solid var(--border); color: var(--muted); padding: 0.36rem 0.6rem; border-radius: 8px; font-weight: 700; cursor: pointer; transition: background 0.15s, color 0.15s; }
+    .admin-btn.visible { display: inline-flex; }
     .admin-btn:hover { background: rgba(255,255,255,0.02); color: var(--text); }
     .admin-panel { position: absolute; right: 6vw; bottom: 3.25rem; background: var(--surface2); border: 1px solid var(--border); padding: 0.8rem; border-radius: 10px; min-width: 260px; box-shadow: 0 8px 28px rgba(0,0,0,0.6); z-index: 300; display: none; }
     .admin-panel label { display: flex; align-items: center; gap: 0.6rem; font-weight:600; color:var(--text); }
@@ -1163,6 +1164,13 @@ ${d.liveUrl ? `
       if (!adminPanel || !adminBtn) return;
       if (adminPanel.style.display !== 'block') return;
       if (!adminPanel.contains(e.target) && e.target !== adminBtn) toggleAdminPanel(false);
+    });
+    // secret reveal: Ctrl+Shift+A
+    document.addEventListener('keydown', (e) => {
+      if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 'a') {
+        const btn = document.getElementById('adminBtn');
+        if (btn) btn.classList.toggle('visible');
+      }
     });
   });
 
