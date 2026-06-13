@@ -238,6 +238,19 @@
       section { padding: 4rem 4vw; }
       footer { flex-direction: column; gap: 0.5rem; text-align: center; }
       .modal-panel { padding: 1.8rem 1.2rem; }
+      /* Center admin panel on narrow screens */
+      .admin-panel {
+        position: fixed !important;
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+        right: auto !important;
+        bottom: 6.5rem !important;
+        min-width: unset !important;
+        width: calc(100% - 3rem) !important;
+        max-width: 420px !important;
+        padding: 0.9rem !important;
+        border-radius: 12px !important;
+      }
     }
   </style>
 </head>
