@@ -1,5 +1,5 @@
 {
-  "name": "dexraelvaservices-backend",
+  "name": "dexrael-backend",
   "version": "1.0.0",
   "description": "Simple backend to store availability and referral settings",
   "main": "index.js",
