@@ -35,6 +35,77 @@
       --border: #ffffff0f; --accent: #00e5ff; --accent2: #7b61ff;
       --accent-glow: #00e5ff22; --text: #f0f0f8; --muted: #7a7a9a; --white: #ffffff;
     }
+
+    /* Light theme (overrides when data-theme="light" is present on <html>) */
+    [data-theme="light"] {
+      --bg: #ffffff; --surface: #eafcff; --surface2: #f7feff;
+      --border: rgba(0,229,255,0.06); --accent: #00e5ff; --accent2: #7b61ff;
+      --accent-glow: #00e5ff22; --text: #000000; --muted: #000000; --white: #ffffff;
+    }
+
+    /* Light-mode specific element adjustments for contrast */
+    [data-theme="light"] nav { background: #1e1e37; backdrop-filter: none; border-bottom: 1px solid rgba(255,255,255,0.08); }
+    [data-theme="light"] .nav-logo { color: #ffffff !important; }
+    [data-theme="light"] .nav-links a { color: #ffffff; }
+    [data-theme="light"] .nav-links a:hover { color: var(--accent); }
+    [data-theme="light"] .nav-cta { color: #000; }
+    [data-theme="light"] h1,
+    [data-theme="light"] h1 span { color: #000; }
+    [data-theme="light"] .hero-photo { background: var(--surface2); }
+    /* Availability tag in light mode: darker green solid (no glow) */
+    [data-theme="light"] .hero-tag.available {
+      background: #d1f7e0; border-color: #8fe6b3; color: #023f24; box-shadow: none; }
+    [data-theme="light"] .hero-tag.available .status-dot { background: #007a3a; box-shadow: none; animation: none; }
+    /* Remove blue-tinted backgrounds specifically for the Experience section */
+    [data-theme="light"] #experience { background: transparent; }
+    [data-theme="light"] .timeline::before { background: linear-gradient(to bottom, rgba(0,0,0,0.06), rgba(0,0,0,0.03), transparent); }
+    [data-theme="light"] .service-card,
+    [data-theme="light"] .tool-chip,
+    [data-theme="light"] .cert-card,
+    [data-theme="light"] .modal-panel,
+    [data-theme="light"] .gallery-thumb { background: var(--surface); border: 1px solid var(--border); }
+    /* Service cards in light mode: flat brand blue with darker stroke, no shadow */
+    [data-theme="light"] .service-card {
+      background: #00e5ff;
+      border: 1px solid #0084b8;
+      box-shadow: none;
+    }
+    [data-theme="light"] .service-card:hover { border-color: #006c91; transform: none; }
+    [data-theme="light"] .service-card p { color: #050b14; }
+    [data-theme="light"] .section-label { color: #000; }
+    [data-theme="light"] .timeline-date { color: #000; background: transparent; border-color: #00e5ff; }
+    [data-theme="light"] .timeline-item::before { background: #000; box-shadow: none; }
+    [data-theme="light"] .exp-cta { color: #000; }
+    [data-theme="light"] .timeline-tags .tag { background: #00e5ff; border-color: transparent; color: #fff; }
+    [data-theme="light"] .tools-group h3 { color: #000; }
+    [data-theme="light"] .card-cta { color: #000; }
+    [data-theme="light"] .service-icon { color: #000; border-color: rgba(0,0,0,0.08); }
+    /* Keep experience timeline items visually neutral in light mode */
+    [data-theme="light"] .timeline-item { background: transparent; border: none; box-shadow: none; }
+    [data-theme="light"] footer { background: var(--surface); border-top: 1px solid var(--border); }
+    [data-theme="light"] .contact-item a { color: #000 !important; }
+    [data-theme="light"] .contact-item a:hover { color: #000 !important; }
+    [data-theme="light"] .modal-label,
+    [data-theme="light"] .modal-date-badge span,
+    [data-theme="light"] .modal-tab.active,
+    [data-theme="light"] .modal-section-title,
+    [data-theme="light"] .modal-body ul li::before,
+    [data-theme="light"] .modal-tag { color: #000 !important; }
+    [data-theme="light"] .modal-tag { background: rgba(0,0,0,0.04); border-color: rgba(0,0,0,0.08); }
+
+    /* Remove glow / box-shadow and strong accents in light mode */
+    [data-theme="light"] .hero-glow { display: none !important; }
+    [data-theme="light"] .btn-primary,
+    [data-theme="light"] .btn-primary:hover { box-shadow: none !important; }
+    [data-theme="light"] .btn-secondary,
+    [data-theme="light"] .btn-secondary:hover { box-shadow: none !important; background: transparent; }
+    [data-theme="light"] .hero-photo-wrap::before { box-shadow: none !important; filter: none !important; }
+    [data-theme="light"] .service-card:hover { border-color: rgba(0,0,0,0.06); transform: translateY(-4px); }
+    [data-theme="light"] .service-card:hover::after { opacity: 0; }
+    [data-theme="light"] .timeline-item::before { box-shadow: none !important; }
+    [data-theme="light"] .modal-icon-wrap { box-shadow: none !important; }
+    [data-theme="light"] .gallery-thumb.active { box-shadow: none !important; border-color: var(--border); }
+
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
     body { font-family: 'Poppins', sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; overflow-x: hidden; }
@@ -42,16 +113,28 @@
     /* NAV */
     nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; justify-content: space-between; align-items: center; padding: 1.2rem 6vw; background: #0a0a0fcc; backdrop-filter: blur(14px); border-bottom: 1px solid var(--border); }
     .nav-logo { font-weight: 800; font-size: 1.15rem; letter-spacing: 0.05em; color: var(--white); }
-    .nav-logo span { color: var(--accent); }
+    .nav-logo span { color: #00e5ff; }
     .nav-links { display: flex; gap: 2rem; list-style: none; }
     .nav-links a { font-size: 0.85rem; font-weight: 500; color: var(--muted); text-decoration: none; letter-spacing: 0.04em; text-transform: uppercase; transition: color 0.2s; }
     .nav-links a:hover { color: var(--accent); }
     .nav-cta { background: var(--accent); color: #000; padding: 0.55rem 1.3rem; border-radius: 6px; font-size: 0.82rem; font-weight: 700; text-decoration: none; letter-spacing: 0.04em; transition: opacity 0.2s, transform 0.2s; }
     .nav-cta:hover { opacity: 0.85; transform: translateY(-1px); }
+    .theme-toggle { background: transparent; border: none; padding: 0; width: auto; min-height: 32px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 0.7rem; }
+    .toggle-track { width: 42px; height: 22px; border-radius: 999px; background: rgba(255,255,255,0.16); position: relative; transition: background 0.25s ease; }
+    .toggle-handle { position: absolute; top: 2px; left: 2px; width: 18px; height: 18px; border-radius: 50%; background: #ffffff; transition: transform 0.25s ease, background 0.25s ease; box-shadow: 0 4px 10px rgba(0,0,0,0.12); display: flex; align-items: center; justify-content: center; font-size: 0.85rem; color: #00a0d9; }
+    .toggle-handle::before { content: '🌙'; }
+    .toggle-label { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.08em; color: var(--text); text-transform: uppercase; }
+    [data-theme="light"] .toggle-track { background: rgba(0,229,255,0.22); }
+    [data-theme="light"] .toggle-handle { transform: translateX(20px); background: #00e5ff; box-shadow: 0 4px 10px rgba(0,0,0,0.12); color: #fff; }
+    [data-theme="light"] .toggle-handle::before { content: '☀️'; }
+    [data-theme="light"] .theme-toggle { border: none; }
+    [data-theme="light"] .toggle-label { color: #ffffff; }
 
     /* HERO */
     #hero { min-height: 100vh; display: flex; align-items: center; padding: 10rem 6vw 6rem; position: relative; overflow: hidden; }
     .hero-grid-bg { position: absolute; inset: 0; background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px); background-size: 60px 60px; mask-image: radial-gradient(ellipse 80% 80% at 50% 40%, black 30%, transparent 100%); }
+    [data-theme="light"] .hero-grid-bg { background-image: none; background: radial-gradient(circle at 20% 20%, rgba(0,229,255,0.20) 0%, transparent 35%), radial-gradient(circle at 80% 15%, rgba(0,229,255,0.14) 0%, transparent 30%), radial-gradient(circle at 60% 70%, rgba(123,97,255,0.10) 0%, transparent 30%); }
+    [data-theme="light"] .hero-glow { background: radial-gradient(circle, rgba(0,229,255,0.14) 0%, transparent 65%); }
     .hero-glow { position: absolute; width: 600px; height: 600px; background: radial-gradient(circle, #00e5ff18 0%, transparent 70%); top: -100px; right: -100px; pointer-events: none; }
     .hero-inner { position: relative; display: grid; grid-template-columns: 1fr auto; gap: 4rem; align-items: center; max-width: 1100px; width: 100%; }
     .hero-tag { display: inline-flex; align-items: center; gap: 0.6rem; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; padding: 0.35rem 0.9rem; border-radius: 100px; margin-bottom: 1.5rem; border: 1px solid transparent; transition: background 0.2s, box-shadow 0.2s, color 0.2s; }
@@ -90,6 +173,8 @@
     .service-card::after { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, var(--accent), var(--accent2)); opacity: 0; transition: opacity 0.3s; }
     .service-card:hover::after { opacity: 1; }
     .service-icon { font-size: 2rem; margin-bottom: 1rem; display: block; }
+    /* Light-mode stroked icon background for service cards */
+    [data-theme="light"] .service-icon { display: inline-flex; width:48px; height:48px; align-items:center; justify-content:center; border-radius:10px; background: rgba(0,0,0,0.06); border: 1px solid rgba(0,0,0,0.08); color: var(--accent); font-size:1.4rem; }
     .service-card h3 { font-size: 1.1rem; font-weight: 600; margin-bottom: 0.6rem; }
     .service-card p { font-size: 0.88rem; color: var(--muted); line-height: 1.6; }
     .card-cta { display: inline-flex; align-items: center; gap: 0.4rem; margin-top: 1.2rem; font-size: 0.78rem; font-weight: 600; color: var(--accent); letter-spacing: 0.05em; text-transform: uppercase; transition: gap 0.2s; }
@@ -169,8 +254,8 @@
     .modal-overlay.active { opacity: 1; pointer-events: all; }
     .modal-panel { background: var(--surface); border: 1px solid #ffffff1a; border-radius: 24px; max-width: 700px; width: 100%; max-height: 90vh; overflow-y: auto; padding: 2.5rem; position: relative; transform: translateY(32px) scale(0.97); transition: transform 0.35s cubic-bezier(0.22,1,0.36,1); }
     .modal-overlay.active .modal-panel { transform: translateY(0) scale(1); }
-    .modal-close { position: absolute; top: 1.5rem; right: 1.5rem; width: 36px; height: 36px; border-radius: 50%; background: var(--surface2); border: 1px solid var(--border); color: var(--muted); font-size: 1.1rem; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: background 0.2s, color 0.2s; z-index: 2; }
-    .modal-close:hover { background: var(--accent); color: #000; border-color: var(--accent); }
+    .modal-close { position: absolute; top: 1.5rem; right: 1.5rem; width: 36px; height: 36px; border-radius: 50%; background: #ffffff; border: 1px solid #1e1e37; color: #1e1e37; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: background 0.2s, color 0.2s, border-color 0.2s; z-index: 2; }
+    .modal-close:hover { background: #1e1e37; color: #ffffff; border-color: #1e1e37; }
     .modal-top-bar { display: flex; align-items: center; gap: 1.2rem; margin-bottom: 1.5rem; padding-right: 3rem; }
     .modal-icon-wrap { width: 56px; height: 56px; border-radius: 14px; background: var(--accent-glow); border: 1px solid #00e5ff22; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; flex-shrink: 0; }
     .modal-label { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.25rem; }
@@ -268,6 +353,12 @@
       <li><a href="#contact">Contact</a></li>
     </ul>
     <a href="https://calendly.com/raeldex1/30min" target="_blank" class="nav-cta">Book a Call</a>
+    <button id="themeToggle" class="theme-toggle" aria-label="Toggle color mode">
+      <span class="toggle-track">
+        <span class="toggle-handle"></span>
+      </span>
+      <span class="toggle-label">Dark</span>
+    </button>
   </nav>
 
   <!-- HERO -->
@@ -586,6 +677,42 @@
   </div>
 
   <script>
+  /* THEME TOGGLE: toggle between dark (default) and light via data-theme="light" on <html> */
+  (function(){
+    const btn = document.getElementById('themeToggle');
+    const label = btn && btn.querySelector('.toggle-label');
+    const prefersDarkMq = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)');
+    const apply = theme => {
+      if(theme === 'light') document.documentElement.setAttribute('data-theme','light');
+      else document.documentElement.removeAttribute('data-theme');
+      if(label) label.textContent = theme === 'light' ? 'Light' : 'Dark';
+    };
+    const setTheme = theme => {
+      localStorage.setItem('theme', theme);
+      apply(theme);
+    };
+    const saved = localStorage.getItem('theme');
+    const systemTheme = prefersDarkMq ? (prefersDarkMq.matches ? 'dark' : 'light') : 'dark';
+    if(saved === 'light' || saved === 'dark') {
+      apply(saved);
+    } else {
+      apply(systemTheme);
+    }
+    if(!saved && prefersDarkMq) {
+      const handleSystemChange = e => apply(e.matches ? 'dark' : 'light');
+      if(typeof prefersDarkMq.addEventListener === 'function') {
+        prefersDarkMq.addEventListener('change', handleSystemChange);
+      } else if(typeof prefersDarkMq.addListener === 'function') {
+        prefersDarkMq.addListener(handleSystemChange);
+      }
+    }
+    if(btn) btn.addEventListener('click', () => {
+      const current = document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+      const next = current === 'light' ? 'dark' : 'light';
+      setTheme(next);
+    });
+  })();
+
   // ============================================================
   // DATA
   // ============================================================
