@@ -159,6 +159,47 @@
     .photo-initials { font-size: 4rem; font-weight: 800; color: var(--accent); line-height: 1; text-align: center; }
     .photo-note { font-size: 0.7rem; color: var(--muted); margin-top: 0.5rem; text-align: center; }
 
+    /* PACKAGES */
+    #packages { background: var(--surface); position: relative; overflow: hidden; }
+    #packages::before { content: ''; position: absolute; width: 520px; height: 520px; border-radius: 50%; background: radial-gradient(circle, rgba(123,97,255,0.12), transparent 68%); top: -260px; right: -160px; pointer-events: none; }
+    .packages-heading { position: relative; text-align: center; max-width: 680px; margin: 0 auto 3rem; }
+    .packages-heading .section-intro { max-width: 620px; margin: 0 auto; }
+    .packages-grid { position: relative; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.4rem; max-width: 1200px; margin: 0 auto; align-items: stretch; }
+    .package-card { display: flex; flex-direction: column; min-width: 0; padding: 2rem; border-radius: 20px; background: var(--bg); border: 1px solid rgba(255,255,255,0.11); box-shadow: 0 18px 50px rgba(0,0,0,0.16); position: relative; transition: transform 0.25s ease, border-color 0.25s ease; }
+    .package-card:hover { transform: translateY(-6px); border-color: rgba(0,229,255,0.55); }
+    .package-card.recommended { border: 2px solid var(--accent); background: linear-gradient(180deg, rgba(0,229,255,0.10), var(--bg) 28%); }
+    .package-card.pro { border-color: rgba(123,97,255,0.55); }
+    .package-badge { align-self: flex-start; min-height: 25px; margin-bottom: 1rem; padding: 0.28rem 0.72rem; border-radius: 999px; background: rgba(255,255,255,0.07); color: var(--muted); font-size: 0.68rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
+    .recommended .package-badge { background: var(--accent); color: #001014; }
+    .pro .package-badge { background: var(--accent2); color: #fff; }
+    .package-card h3 { font-size: 1.45rem; line-height: 1.2; margin-bottom: 0.45rem; }
+    .package-summary { min-height: 46px; margin-bottom: 1.25rem; color: var(--muted); font-size: 0.84rem; }
+    .package-price { display: flex; align-items: baseline; gap: 0.45rem; margin-bottom: 0.2rem; }
+    .package-price strong { color: var(--text); font-size: clamp(1.8rem, 3vw, 2.45rem); line-height: 1; letter-spacing: -0.04em; }
+    .package-price span { color: var(--muted); font-size: 0.76rem; }
+    .package-international { color: var(--accent); font-size: 0.8rem; font-weight: 600; margin-bottom: 1.5rem; }
+    .price-international { display: none; }
+    html[data-pricing-region="international"] .price-local { display: none; }
+    html[data-pricing-region="international"] .price-international { display: flex; }
+    html[data-pricing-region="international"] p.price-international { display: block; }
+    .package-features { list-style: none; display: flex; flex-direction: column; gap: 0.72rem; margin-bottom: 1.8rem; }
+    .package-features li { display: flex; align-items: flex-start; gap: 0.65rem; color: var(--text); font-size: 0.82rem; line-height: 1.45; }
+    .package-features li::before { content: '✓'; flex-shrink: 0; display: grid; place-items: center; width: 19px; height: 19px; margin-top: 1px; border-radius: 50%; background: rgba(0,229,255,0.14); color: var(--accent); font-size: 0.68rem; font-weight: 800; }
+    .package-cta { display: block; margin-top: auto; padding: 0.78rem 1rem; border: 1px solid rgba(0,229,255,0.48); border-radius: 9px; color: var(--text); text-align: center; text-decoration: none; font-size: 0.82rem; font-weight: 700; transition: background 0.2s, color 0.2s, transform 0.2s; }
+    .package-cta:hover, .recommended .package-cta { background: var(--accent); color: #001014; }
+    .package-note { max-width: 1200px; margin: 1.5rem auto 0; color: var(--muted); text-align: center; font-size: 0.76rem; }
+    [data-theme="light"] #packages { background: #f2fcff; }
+    [data-theme="light"] .package-card { background: #fff; border-color: rgba(0,72,92,0.20); box-shadow: 0 14px 35px rgba(0,70,90,0.09); }
+    [data-theme="light"] .package-card.recommended { border-color: #0084a8; background: linear-gradient(180deg, #d9faff, #fff 28%); }
+    [data-theme="light"] .package-card.pro { border-color: rgba(83,60,196,0.55); }
+    [data-theme="light"] .package-badge { background: #e8eef0; color: #26383d; }
+    [data-theme="light"] .recommended .package-badge { background: #007f9f; color: #fff; }
+    [data-theme="light"] .package-international { color: #00677f; }
+    [data-theme="light"] .package-features li::before { background: #d8f8ff; color: #00677f; }
+    [data-theme="light"] .package-cta { color: #001014; border-color: #007f9f; }
+    [data-theme="light"] .package-cta:hover,
+    [data-theme="light"] .recommended .package-cta { background: #007f9f; color: #fff; }
+
     /* SECTIONS */
     section { padding: 6rem 6vw; }
     .section-label { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.8rem; }
@@ -316,10 +357,21 @@
     .lightbox-close:hover { background: var(--accent); color: #000; }
 
     /* RESPONSIVE */
+    @media (max-width: 1050px) {
+      .packages-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .package-card.pro { grid-column: 1 / -1; }
+      .package-card.pro .package-features { columns: 2; display: block; }
+      .package-card.pro .package-features li { break-inside: avoid; margin-bottom: 0.72rem; }
+    }
+
     @media (max-width: 768px) {
       nav { padding: 1rem 4vw; } .nav-links { display: none; }
       #hero { padding: 8rem 4vw 4rem; } .hero-inner { grid-template-columns: 1fr; }
       .hero-photo-wrap { width: 160px; height: 185px; margin: 0 auto; }
+      .packages-grid { grid-template-columns: 1fr; max-width: 520px; }
+      .package-card.pro { grid-column: auto; }
+      .package-card.pro .package-features { columns: auto; display: flex; }
+      .package-summary { min-height: 0; }
       section { padding: 4rem 4vw; }
       footer { flex-direction: column; gap: 0.5rem; text-align: center; }
       .modal-panel { padding: 1.8rem 1.2rem; }
@@ -346,6 +398,8 @@
   <nav>
     <div class="nav-logo">DEX<span>.</span>RAEL</div>
     <ul class="nav-links">
+      <li><a href="projects.html">Projects</a></li>
+      <li><a href="#packages">Packages</a></li>
       <li><a href="#services">Services</a></li>
       <li><a href="#experience">Experience</a></li>
       <li><a href="#tools">Tools</a></li>
@@ -386,6 +440,84 @@
 </div>
         
     </div>
+    </div>
+  </section>
+
+  <!-- WEBSITE PACKAGES -->
+  <section id="packages">
+    <div class="packages-heading">
+      <p class="section-label">Website Packages</p>
+      <h2>Choose the right plan for your business</h2>
+      <p class="section-intro">From a polished online presence to a complete growth and automation system.</p>
+    </div>
+
+    <div class="packages-grid">
+      <article class="package-card">
+        <span class="package-badge">Essential Start</span>
+        <h3>Lite Plan</h3>
+        <p class="package-summary">A professional starter website with the essentials needed to launch online.</p>
+        <div class="package-price price-local"><strong>₱12,000</strong><span>50% upfront</span></div>
+        <div class="package-price price-international"><strong>$699</strong><span>50% upfront</span></div>
+        <p class="package-international price-local">Philippines price</p>
+        <p class="package-international price-international">International price · USD</p>
+        <ul class="package-features">
+          <li>2-page website</li>
+          <li>1-year domain registration</li>
+          <li>1 year of hosting</li>
+          <li>1 custom email mailbox</li>
+          <li>3 months of support and minor updates</li>
+          <li>SSL security</li>
+          <li>Google Search Console indexing</li>
+        </ul>
+        <a class="package-cta" href="https://calendly.com/raeldex1/30min" target="_blank" rel="noopener">Choose Lite</a>
+      </article>
+
+      <article class="package-card recommended">
+        <span class="package-badge">Most Popular</span>
+        <h3>Recommended Plan</h3>
+        <p class="package-summary">A stronger business website with SEO, CRM tools, and extended support.</p>
+        <div class="package-price price-local"><strong>₱23,000</strong><span>50% upfront</span></div>
+        <div class="package-price price-international"><strong>$1,100</strong><span>50% upfront</span></div>
+        <p class="package-international price-local">Philippines price</p>
+        <p class="package-international price-international">International price · USD</p>
+        <ul class="package-features">
+          <li>4-page website</li>
+          <li>1-year domain registration</li>
+          <li>1 year of hosting</li>
+          <li>Basic SEO setup</li>
+          <li>6 months of support and updates via Zoom</li>
+          <li>3 custom email mailboxes</li>
+          <li>SSL security</li>
+          <li>CRM setup</li>
+        </ul>
+        <a class="package-cta" href="https://calendly.com/raeldex1/30min" target="_blank" rel="noopener">Choose Recommended</a>
+      </article>
+
+      <article class="package-card pro">
+        <span class="package-badge">Complete Growth System</span>
+        <h3>Pro Plan</h3>
+        <p class="package-summary">A full website, automation, marketing, analytics, and sales infrastructure.</p>
+        <div class="package-price price-local"><strong>₱80,000</strong><span>65% upfront</span></div>
+        <div class="package-price price-international"><strong>$2,500</strong><span>65% upfront</span></div>
+        <p class="package-international price-local">Philippines price</p>
+        <p class="package-international price-international">International price · USD</p>
+        <ul class="package-features">
+          <li>Full website and 3 subdomains</li>
+          <li>Workflow automation</li>
+          <li>1-year domain and hosting</li>
+          <li>1 year of support and updates via Zoom</li>
+          <li>SSL security and 5 custom email mailboxes</li>
+          <li>Advanced SEO setup</li>
+          <li>Social media management and email campaigns</li>
+          <li>CRM, pipeline, and funnel setup</li>
+          <li>A2P setup for US clients and SMTP setup</li>
+          <li>Payment gateway integration</li>
+          <li>Google Analytics and Microsoft Clarity</li>
+        </ul>
+        <a class="package-cta" href="https://calendly.com/raeldex1/30min" target="_blank" rel="noopener">Choose Pro</a>
+      </article>
+    </div>
+    <p class="package-note">All packages can be customized to your needs. Final pricing may vary depending on your selected features, integrations, and project scope.</p>
   </section>
 
   <!-- SERVICES -->
@@ -1427,6 +1559,74 @@ ${d.liveUrl ? `
     clearTimeout(t._hideTimeout);
     t._hideTimeout = setTimeout(() => { t.classList.remove('show'); }, ms);
   }
+  </script>
+
+  <script>
+  // Show PHP pricing to visitors in the Philippines and USD pricing elsewhere.
+  (function setRegionalPricing() {
+    const CACHE_KEY = 'pricingRegion';
+    const CACHE_DURATION = 24 * 60 * 60 * 1000;
+
+    function applyRegion(region) {
+      document.documentElement.setAttribute('data-pricing-region', region);
+    }
+
+    function browserFallback() {
+      const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
+      const languages = navigator.languages || [navigator.language || ''];
+      const appearsPhilippine =
+        timeZone === 'Asia/Manila' ||
+        languages.some(language => /-(PH)$/i.test(language));
+
+      return appearsPhilippine ? 'local' : 'international';
+    }
+
+    const previewRegion = new URLSearchParams(location.search).get('pricing');
+    if (previewRegion === 'local' || previewRegion === 'international') {
+      applyRegion(previewRegion);
+      return;
+    }
+
+    try {
+      const cached = JSON.parse(localStorage.getItem(CACHE_KEY));
+      if (cached && cached.region && Date.now() - cached.savedAt < CACHE_DURATION) {
+        applyRegion(cached.region);
+        return;
+      }
+    } catch (error) {
+      // Continue with live detection when cached data is unavailable.
+    }
+
+    applyRegion(browserFallback());
+
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 3500);
+
+    fetch('https://ipapi.co/country_code/', { signal: controller.signal })
+      .then(response => {
+        if (!response.ok) throw new Error('Country lookup failed');
+        return response.text();
+      })
+      .then(countryCode => {
+        const region = countryCode.trim().toUpperCase() === 'PH'
+          ? 'local'
+          : 'international';
+
+        applyRegion(region);
+        try {
+          localStorage.setItem(CACHE_KEY, JSON.stringify({
+            region,
+            savedAt: Date.now()
+          }));
+        } catch (error) {
+          // Pricing still works when storage is disabled.
+        }
+      })
+      .catch(() => {
+        // Keep the browser-based fallback if IP detection is unavailable.
+      })
+      .finally(() => clearTimeout(timeout));
+  })();
   </script>
 
   <!-- toast placeholder created on demand -->
